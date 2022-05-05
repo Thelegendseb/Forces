@@ -3,8 +3,10 @@
     Protected Position As Vector
     Protected Velocity As Vector
     Protected Acceleration As Vector
+    Protected Mass As Double
 
-    Sub New()
+    Sub New(Mass As Double)
+        Me.Mass = Mass
         Me.Position = Vector.Zero
         Me.Velocity = Vector.Zero
         Me.Acceleration = Vector.Zero
@@ -63,6 +65,16 @@
     End Function
     Public Sub SetAcceleration(ByVal Acceleration As Vector)
         Me.Acceleration = Acceleration
+    End Sub
+    Public Sub SetAcceleration(XComponent As Double, EffectedByGravity As Boolean)
+        Dim YComponent As Double = 0.0
+        Dim Gravity As Double = 2.0 'Stored in Session
+        If EffectedByGravity Then
+            YComponent = Me.Mass * Gravity
+        Else
+            YComponent = 0
+        End If
+        Me.Acceleration = New Vector(XComponent, YComponent)
     End Sub
     '=============================
 End Class

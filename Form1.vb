@@ -14,10 +14,11 @@
     Dim TestEntity As Entity
 
     Sub EntityInit()
-        TestEntity = New Entity
+        TestEntity = New Entity(1)
         TestEntity.SetPosition(New Vector(100, 150))
-        TestEntity.SetVelocity(New Vector(10, 0))
-        TestEntity.SetAcceleration(New Vector(0, 1))
+        TestEntity.SetVelocity(New Vector(10, 5))
+        'TestEntity.SetAcceleration(New Vector(0, 1))
+        TestEntity.SetAcceleration(0, True)
     End Sub
     Sub DrawEntity(Entity As Entity)
         Using g As Graphics = Me.CreateGraphics
