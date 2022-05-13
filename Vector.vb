@@ -32,8 +32,15 @@
         Return Math.Sqrt(dx * dx + dy * dy)
     End Function
 
-    Public Shared Function ConvertSingleValue(v1 As Double) As Vector
+    Public Shared Function Convert(v1 As Double) As Vector
         Return New Vector(v1, v1)
+    End Function
+    Public Sub Dissapate(Coefficient As Double)
+        Me.X *= Coefficient
+        Me.Y *= Coefficient
+    End Sub
+    Public Shared Function Dot(v1 As Vector) As Double
+        Return v1.X * v1.X + v1.Y * v1.Y
     End Function
 
     Public ReadOnly Property ToPointF() As PointF
