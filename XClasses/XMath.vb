@@ -1,7 +1,6 @@
 ﻿Public Class XMath
 
     'compatibility with XVector,XEntity Class
-
     Public Shared Function Distance(v1 As XVector, v2 As XVector)
         Return Math.Sqrt(Math.Pow(v1.X - v2.X, 2) + Math.Pow(v1.Y - v2.Y, 2))
     End Function

@@ -13,7 +13,7 @@
         Me.Acceleration = XVector.Zero
     End Sub
 
-    Public Sub Update(Session As Session)
+    Public Sub Update(ByRef Session As Session)
 
         BorderCollisionChecks(Session.GetBounds)
         EntityCollisionChecks(Session.GetEntityList)
@@ -57,10 +57,10 @@
         End If
 
         If CollisionOccured Then
-            Me.Velocity.Dissapate(0.8) 'Friction/ Loss of Ek?
+            Me.Velocity.Dissapate(0.9) 'Friction/ Loss of Ek?
         End If
     End Sub
-    Private Sub EntityCollisionCheck(Entity As XEntity)
+    Private Sub EntityCollisionCheck(ByRef Entity As XEntity)
         If XMath.EECollisionCheck(Me, Entity) = True Then
             Dim Dist As XVector = Me.Position - Entity.Position
             Dim PenDepth As Double = Me.GetRadius + Entity.GetRadius - Dist.Magnitude
@@ -71,7 +71,7 @@
             ResolveCollision(Entity)
         End If
     End Sub
-    Private Sub ResolveCollision(Entity As XEntity)
+    Private Sub ResolveCollision(ByRef Entity As XEntity)
 
         Dim theta As Single = -Math.Atan2(Entity.GetPosition.Y - Me.Position.Y, Entity.GetPosition.X - Me.Position.X)
 
@@ -79,7 +79,7 @@
         Dim m1 As Double = Me.Mass
         Dim m2 As Double = Entity.GetMass
         Dim u1 As XVector = Me.Velocity.Rotate(theta)
-        Dim u2 As XVector = Entity.GetVelocity.Rotate(theta)
+        Dim u2 As XVector = Entity.Velocity.Rotate(theta)
 
         Dim v1 As New XVector(u1.X * (m1 - m2) / (m1 + m2) + u2.X * 2 * m2 / (m1 + m2), u1.Y)
         Dim v2 As New XVector(u2.X * (m1 - m2) / (m1 + m2) + u1.X * 2 * m2 / (m1 + m2), u2.Y)
@@ -89,6 +89,9 @@
 
         Me.SetVelocity(vFinal1)
         Entity.SetVelocity(vFinal2)
+
+        Me.Velocity.Dissapate(0.9)  'replace all 0.9s with a constant friction coefficient
+        Entity.Velocity.Dissapate(0.9)
 
     End Sub
 
