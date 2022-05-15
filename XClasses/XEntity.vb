@@ -76,16 +76,16 @@
         Dim theta As Single = -Math.Atan2(Entity.GetPosition.Y - Me.Position.Y, Entity.GetPosition.X - Me.Position.X)
 
         'Variable Dec for easy reading
-        Dim m1 As Double = Me.Mass
-        Dim m2 As Double = Entity.GetMass
-        Dim u1 As XVector = Me.Velocity.Rotate(theta)
-        Dim u2 As XVector = Entity.Velocity.Rotate(theta)
+        Dim mass1 As Double = Me.Mass
+        Dim mass2 As Double = Entity.GetMass
+        Dim initial1 As XVector = Me.Velocity.Rotate(theta)
+        Dim initial2 As XVector = Entity.Velocity.Rotate(theta)
 
-        Dim v1 As New XVector(u1.X * (m1 - m2) / (m1 + m2) + u2.X * 2 * m2 / (m1 + m2), u1.Y)
-        Dim v2 As New XVector(u2.X * (m1 - m2) / (m1 + m2) + u1.X * 2 * m2 / (m1 + m2), u2.Y)
+        Dim final1 As New XVector(initial1.X * (mass1 - mass2) / (mass1 + mass2) + initial2.X * 2 * mass2 / (mass1 + mass2), initial1.Y)
+        Dim final2 As New XVector(initial2.X * (mass1 - mass2) / (mass1 + mass2) + initial1.X * 2 * mass2 / (mass1 + mass2), initial2.Y)
 
-        Dim vFinal1 As XVector = v1.Rotate(-theta)
-        Dim vFinal2 As XVector = v2.Rotate(-theta)
+        Dim vFinal1 As XVector = final1.Rotate(-theta)
+        Dim vFinal2 As XVector = final2.Rotate(-theta)
 
         Me.SetVelocity(vFinal1)
         Entity.SetVelocity(vFinal2)

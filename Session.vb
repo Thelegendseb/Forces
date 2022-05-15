@@ -24,7 +24,6 @@
 
         AddTests()
 
-        GravityToggle(True)
 
     End Sub
     Private Sub AddTests()
@@ -32,37 +31,36 @@
         Me.EntityList.Add(New XEntity(1))
         Me.EntityList(0).SetPosition(New XVector(50, 100))
         Me.EntityList(0).SetVelocity(New XVector(5, 3))
-        Me.EntityList(0).SetAcceleration(0, True)
+
 
         Me.EntityList.Add(New XEntity(1.5))
         Me.EntityList(1).SetPosition(New XVector(300, 100))
         Me.EntityList(1).SetVelocity(New XVector(2, 2))
-        Me.EntityList(1).SetAcceleration(0, True)
+
 
         Me.EntityList.Add(New XEntity(2))
         Me.EntityList(2).SetPosition(New XVector(550, 100))
         Me.EntityList(2).SetVelocity(New XVector(20, 1))
-        Me.EntityList(2).SetAcceleration(0, True)
+
 
         Me.EntityList.Add(New XEntity(0.5))
         Me.EntityList(3).SetPosition(New XVector(50, 300))
         Me.EntityList(3).SetVelocity(New XVector(10, 4))
-        Me.EntityList(3).SetAcceleration(0, True)
+
 
         Me.EntityList.Add(New XEntity(0.75))
         Me.EntityList(4).SetPosition(New XVector(300, 300))
         Me.EntityList(4).SetVelocity(New XVector(5, -3))
-        Me.EntityList(4).SetAcceleration(0, True)
+
 
         Me.EntityList.Add(New XEntity(0.5))
         Me.EntityList(5).SetPosition(New XVector(550, 300))
         Me.EntityList(5).SetVelocity(New XVector(-2, -2))
-        Me.EntityList(5).SetAcceleration(0, True)
+
 
         Me.EntityList.Add(New XEntity(0.25))
         Me.EntityList(6).SetPosition(New XVector(50, 500))
         Me.EntityList(6).SetVelocity(New XVector(8, -4))
-        Me.EntityList(6).SetAcceleration(0, True)
     End Sub
     Public Sub Start()
         Me.Running = True
@@ -90,20 +88,43 @@
     End Sub
     Private Sub AccelerationToggleX(val As Double)
         For Each Entity As XEntity In Me.EntityList
-            Entity.SetAcceleration(val, Entity.GetAcceleration.Y)
+            Entity.SetAcceleration(New XVector(val, Entity.GetAcceleration.Y))
         Next
     End Sub
     Private Sub AccelerationToggleY(val As Double)
         For Each Entity As XEntity In Me.EntityList
-            Entity.SetAcceleration(Entity.GetAcceleration.X, val)
+            Entity.SetAcceleration(New XVector(Entity.GetAcceleration.X, val))
         Next
     End Sub
 
     '======HANDLERS=======
     Private Sub AddHandlers()
+        AddHandler Me.Parent.Shown, AddressOf Me.Shown
+        AddHandler Me.Parent.KeyDown, AddressOf KeyDown
         AddHandler Me.Parent.MouseMove, AddressOf Me.MouseMove
         AddHandler Me.Parent.FormClosing, AddressOf Me.FormClosing
         AddHandler Me.Parent.ResizeEnd, AddressOf Me.ResizeEnd
+    End Sub
+    Private Sub Shown(sender As Object, e As EventArgs)
+        Me.Start()
+    End Sub
+    Private Sub KeyDown(sender As Object, e As KeyEventArgs)
+        Select Case e.KeyCode
+            Case Keys.Escape
+                Application.Exit()
+            Case Keys.A
+                Me.AccelerationToggleX(-1)
+            Case Keys.D
+                Me.AccelerationToggleX(1)
+            Case Keys.W
+                Me.AccelerationToggleY(-1)
+            Case Keys.S
+                Me.AccelerationToggleY(1)
+            Case Keys.D1
+                Me.GravityToggle(True)
+            Case Keys.D2
+                Me.GravityToggle(False)
+        End Select
     End Sub
     Private Sub MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
         If e.Button = Windows.Forms.MouseButtons.Left Then

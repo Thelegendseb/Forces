@@ -13,5 +13,12 @@
             Return False
         End If
     End Function
+    Public Shared Function Map(Value As Double,
+                     Min As Double,
+                     Max As Double,
+                     Min2 As Double,
+                     Max2 As Double) As Double
+        Return (((Value - Min) / (Max - Min)) * (Max2 - Min2)) + Min2
+    End Function
 
 End Class
