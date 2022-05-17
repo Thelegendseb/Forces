@@ -2,7 +2,7 @@
 
     Private Session As Session
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.Session = New Session(Me)
+        Me.Session = New Session
     End Sub
 
 End Class

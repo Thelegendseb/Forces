@@ -1,28 +1,22 @@
 ﻿Public Class Session
 
-    Private Parent As Form
-    Private Graphics As XGraphics
-
     Private Timer As Stopwatch
     Const FPS As Integer = 60
 
     Protected EntityList As List(Of XEntity)
     Protected Running As Boolean
     Protected Bounds As Rectangle
-    Sub New(ByRef Control As Form) 'has to be a form for key down etc.
-        Init(Control)
+    Sub New() 'has to be a form for key down etc.
+        Init()
     End Sub
-    Private Sub Init(Control As Form) 'doesnt need to be a form
-        Me.Parent = Control
+    Private Sub Init() 'doesnt need to be a form
+
 
         Me.Timer = New Stopwatch
 
         Me.EntityList = New List(Of XEntity)
 
-        Me.Graphics = New XGraphics(Control.CreateGraphics, Control.Width, Control.Height)
-        Me.Bounds = Control.ClientRectangle
-
-        AddHandlers()
+        Me.Bounds = New Rectangle(0, 0, 1000, 1000)
 
         AddTests()
     End Sub
@@ -64,18 +58,14 @@
     End Sub
     Public Sub Start()
         Me.Running = True
-        Do
+
+        While Me.Running
             Me.Timer.Restart()
 
             Me.Update()
 
-            Me.Graphics.Draw(Me)
-
             Me.TimerEnd()
-
-            Application.DoEvents()
-
-        Loop Until Me.Running = False
+        End While
     End Sub
     Private Sub Update()
         For Each Entity As XEntity In Me.EntityList
@@ -83,8 +73,10 @@
         Next
     End Sub
     Private Sub TimerEnd()
-        If 1000 / FPS < Me.Timer.ElapsedMilliseconds / 1000 Then Throw New Exception("Time taken to execute exceeded Frame Rate")
-        System.Threading.Thread.Sleep(1000 / FPS - (Timer.ElapsedMilliseconds / 1000))
+        Dim frametime As Double = 1000 / FPS
+        Dim elapsed As Double = Me.Timer.ElapsedMilliseconds / 1000
+        If frametime < elapsed Then Throw New Exception("Time taken to execute exceeded Frame Rate")
+        System.Threading.Thread.Sleep(Int(frametime - elapsed))
     End Sub
     'ALL ENTITY OPS
     Private Sub GravityToggle(G As Boolean)
@@ -103,52 +95,8 @@
         Next
     End Sub
 
-    '======HANDLERS=======
-    Private Sub AddHandlers()
-        AddHandler Me.Parent.Shown, AddressOf Me.Shown
-        AddHandler Me.Parent.KeyDown, AddressOf KeyDown
-        AddHandler Me.Parent.MouseMove, AddressOf Me.MouseMove
-        AddHandler Me.Parent.FormClosing, AddressOf Me.FormClosing
-        AddHandler Me.Parent.ResizeEnd, AddressOf Me.ResizeEnd
-    End Sub
-    Private Sub Shown(sender As Object, e As EventArgs)
-        Me.Start()
-    End Sub
-    Private Sub KeyDown(sender As Object, e As KeyEventArgs)
-        Select Case e.KeyCode
-            Case Keys.Escape
-                Application.Exit()
-            Case Keys.A
-                Me.AccelerationToggleX(-1)
-            Case Keys.D
-                Me.AccelerationToggleX(1)
-            Case Keys.W
-                Me.AccelerationToggleY(-1)
-            Case Keys.S
-                Me.AccelerationToggleY(1)
-            Case Keys.D1
-                Me.GravityToggle(True)
-            Case Keys.D2
-                Me.GravityToggle(False)
-        End Select
-    End Sub
-    Private Sub MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
-        If e.Button = Windows.Forms.MouseButtons.Left Then
-            Me.EntityList(0).SetPosition(New XVector(e.X, e.Y))
-        End If
-    End Sub
-    Private Sub FormClosing(sender As Object, e As FormClosingEventArgs)
-        Me.Halt()
-    End Sub
-    Private Sub ResizeEnd(sender As Object, e As EventArgs)
-        Me.Resize()
-    End Sub
 
     '===GETTERS/SETTERS/OTHERS====
-    Private Sub Resize()
-        Me.Graphics = New XGraphics(Me.Parent.CreateGraphics, Me.Parent.Width, Me.Parent.Height) 'not form dependant
-        Me.Bounds = Parent.ClientRectangle
-    End Sub
     Public Function GetEntityList() As List(Of XEntity)
         Return Me.EntityList
     End Function
