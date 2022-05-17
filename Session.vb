@@ -1,7 +1,7 @@
 ﻿Public Class Session
 
-    Private Graphics As XGraphics
     Private Parent As Form
+    Private Graphics As XGraphics
 
     Private Timer As Stopwatch
     Const FPS As Integer = 60
@@ -10,21 +10,21 @@
     Protected Running As Boolean
     Protected Bounds As Rectangle
     Sub New(ByRef Control As Form) 'has to be a form for key down etc.
-
+        Init(Control)
+    End Sub
+    Private Sub Init(Control As Form) 'doesnt need to be a form
         Me.Parent = Control
 
         Me.Timer = New Stopwatch
 
         Me.EntityList = New List(Of XEntity)
 
-        Me.Graphics = New XGraphics(Control.CreateGraphics)
+        Me.Graphics = New XGraphics(Control.CreateGraphics, Control.Width, Control.Height)
         Me.Bounds = Control.ClientRectangle
 
         AddHandlers()
 
         AddTests()
-
-
     End Sub
     Private Sub AddTests()
 
@@ -67,19 +67,25 @@
         Do
             Me.Timer.Restart()
 
-            Me.Graphics.Clear()
-            For Each Entity As XEntity In Me.EntityList
-                Entity.Update(Me)
-                Me.Graphics.DrawEntity(Entity) 'testing purposes rn
-            Next
+            Me.Update()
 
+            Me.Graphics.Draw(Me)
 
-            If 1000 / FPS < Me.Timer.ElapsedMilliseconds / 1000 Then Throw New Exception("Time taken to execute exceeded Frame Rate")
-            System.Threading.Thread.Sleep(1000 / FPS - (Timer.ElapsedMilliseconds / 1000))
+            Me.TimerEnd()
+
             Application.DoEvents()
+
         Loop Until Me.Running = False
     End Sub
-
+    Private Sub Update()
+        For Each Entity As XEntity In Me.EntityList
+            Entity.Update(Me)
+        Next
+    End Sub
+    Private Sub TimerEnd()
+        If 1000 / FPS < Me.Timer.ElapsedMilliseconds / 1000 Then Throw New Exception("Time taken to execute exceeded Frame Rate")
+        System.Threading.Thread.Sleep(1000 / FPS - (Timer.ElapsedMilliseconds / 1000))
+    End Sub
     'ALL ENTITY OPS
     Private Sub GravityToggle(G As Boolean)
         For Each Entity As XEntity In Me.EntityList
@@ -139,8 +145,8 @@
     End Sub
 
     '===GETTERS/SETTERS/OTHERS====
-    Public Sub Resize()
-        Me.Graphics = New XGraphics(Parent.CreateGraphics)
+    Private Sub Resize()
+        Me.Graphics = New XGraphics(Me.Parent.CreateGraphics, Me.Parent.Width, Me.Parent.Height) 'not form dependant
         Me.Bounds = Parent.ClientRectangle
     End Sub
     Public Function GetEntityList() As List(Of XEntity)

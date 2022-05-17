@@ -81,8 +81,8 @@
         Dim initial1 As XVector = Me.Velocity.Rotate(theta)
         Dim initial2 As XVector = Entity.Velocity.Rotate(theta)
 
-        Dim final1 As New XVector(initial1.X * (mass1 - mass2) / (mass1 + mass2) + initial2.X * 2 * mass2 / (mass1 + mass2), initial1.Y)
-        Dim final2 As New XVector(initial2.X * (mass1 - mass2) / (mass1 + mass2) + initial1.X * 2 * mass2 / (mass1 + mass2), initial2.Y)
+        Dim final1 As New XVector(XMath.SUVATs.Velocity(initial1, initial2, mass1, mass2), initial1.Y)
+        Dim final2 As New XVector(XMath.SUVATs.Velocity(initial2, initial1, mass1, mass2), initial2.Y)
 
         Dim vFinal1 As XVector = final1.Rotate(-theta)
         Dim vFinal2 As XVector = final2.Rotate(-theta)
